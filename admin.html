@@ -6,12 +6,12 @@
     <title>Панель адміністратора — Pure Honey</title>
     <style>
         body { font-family: system-ui, -apple-system, sans-serif; background: #f4f4f9; padding: 20px; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h1, h2 { text-align: center; color: #d97706; }
+        .container { max-width: 600px; margin: 40px auto; background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1, h2 { text-align: center; color: #d97706; margin-bottom: 20px; }
         .form-group { margin-bottom: 15px; }
         label { display: block; margin-bottom: 5px; font-weight: 600; }
         input, textarea, button { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
-        button { background: #d97706; color: #fff; font-weight: bold; border: none; cursor: pointer; margin-top: 10px; }
+        button { background: #d97706; color: #fff; font-weight: bold; border: none; cursor: pointer; margin-top: 10px; font-size: 16px; }
         button:hover { background: #b45309; }
         .hidden { display: none; }
         .variant-row { display: flex; gap: 10px; margin-bottom: 10px; }
@@ -21,13 +21,12 @@
 <body>
 
 <div class="container">
-    <!-- Форма входу -->
     <div id="login-section">
-        <h1>Вхід в адмінку</h1>
+        <h1>Вхід в адмін-панель</h1>
         <form id="login-form">
             <div class="form-group">
                 <label>Email адміна:</label>
-                <input type="email" id="login-email" required placeholder="admin@example.com">
+                <input type="email" id="login-email" required placeholder="pasaa451@gmail.com">
             </div>
             <div class="form-group">
                 <label>Пароль:</label>
@@ -37,7 +36,6 @@
         </form>
     </div>
 
-    <!-- Панель додавання товарів -->
     <div id="admin-panel" class="hidden">
         <h2>Додати новий мед</h2>
         <form id="add-product-form">
@@ -47,7 +45,7 @@
             </div>
             <div class="form-group">
                 <label>Опис:</label>
-                <textarea id="prod-desc" rows="3" placeholder="Короткий опис меду..."></textarea>
+                <textarea id="prod-desc" rows="3" placeholder="Короткий опис..."></textarea>
             </div>
             <div class="form-group">
                 <label>Посилання на фото (URL):</label>
@@ -63,9 +61,13 @@
                     <input type="text" placeholder="Об'єм (напр. 1 л)" class="var-weight">
                     <input type="number" placeholder="Ціна (грн)" class="var-price">
                 </div>
+                <div class="variant-row">
+                    <input type="text" placeholder="Об'єм (напр. 3 л)" class="var-weight">
+                    <input type="number" placeholder="Ціна (грн)" class="var-price">
+                </div>
             </div>
             <button type="submit" id="save-btn">Зберегти та опублікувати</button>
-            <button type="button" id="logout-btn" style="background:#6b7280;">Вийти</button>
+            <button type="button" id="logout-btn" style="background:#6b7280; margin-top:10px;">Вийти</button>
         </form>
     </div>
 </div>
@@ -91,6 +93,7 @@
   const loginSection = document.getElementById('login-section');
   const adminPanel = document.getElementById('admin-panel');
 
+  // Перевірка стану входу (якщо увійшов — показуємо форму додавання)
   onAuthStateChanged(auth, (user) => {
     if (user) {
       loginSection.classList.add('hidden');
@@ -101,6 +104,7 @@
     }
   });
 
+  // Авторизація адміна
   document.getElementById('login-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const email = document.getElementById('login-email').value;
@@ -114,8 +118,10 @@
     }
   });
 
+  // Вихід
   document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
 
+  // Збереження товару в Firebase Firestore
   document.getElementById('add-product-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const saveBtn = document.getElementById('save-btn');
