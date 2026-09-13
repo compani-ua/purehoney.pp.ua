@@ -2,17 +2,17 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
 import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyA_FGyYTaIMDQlogkjgHdeahoMHMp9w2Q",
+  apiKey: "AIzaSyA_FGyYTdIMDQlogkjgHdeahoMMKp9w2Q",
   authDomain: "pure-honey-33616.firebaseapp.com",
   projectId: "pure-honey-33616",
   storageBucket: "pure-honey-33616.firebasestorage.app",
   messagingSenderId: "275030343750",
-  appId: "1:275030343750:web:1403062f029c256400a047"
+  appId: "1:275030343750:web:1403062f029c255a4b0a47",
+  measurementId: "G-SM6X56RK74"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
 let cart = [];
 
 document.addEventListener('DOMContentLoaded', () => {
