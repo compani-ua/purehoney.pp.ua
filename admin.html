@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель управління — Pure Honey</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .admin-container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+        .variant-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .variant-row input {
+            flex: 1;
+        }
+        .btn-submit {
+            background: #ffb703;
+            color: #1e1e24;
+            border: none;
+            padding: 12px 20px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .btn-submit:hover {
+            background: #fb8500;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Блок входу -->
+    <div id="login-block" class="admin-container">
+        <h2>Вхід в адмін-панель</h2>
+        <form id="login-form">
+            <div class="form-group">
+                <label>Email адміна:</label>
+                <input type="email" id="login-email" required>
+            </div>
+            <div class="form-group">
+                <label>Пароль:</label>
+                <input type="password" id="login-password" required>
+            </div>
+            <button type="submit" class="btn-submit">Увійти</button>
+        </form>
+    </div>
+
+    <!-- Панель додавання товару (прихована до авторизації) -->
+    <div id="admin-panel" class="admin-container" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2>Додати новий мед</h2>
+            <button id="logout-btn" style="background: #e74c3c; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">Вийти</button>
+        </div>
+
+        <form id="add-product-form">
+            <div class="form-group">
+                <label>Назва товару (наприклад: Мед Липовий):</label>
+                <input type="text" id="prod-name" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Опис товару:</label>
+                <textarea id="prod-desc" rows="3" placeholder="Свіжий ароматний мед..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Посилання на картинку (URL):</label>
+                <input type="url" id="prod-image" placeholder="https://..." required>
+            </div>
+
+            <h3>Варіанти фасовки та ціни:</h3>
+            
+            <div class="variant-row">
+                <input type="text" id="w1" placeholder="Вага (напр: 0.5 л)" required>
+                <input type="number" id="p1" placeholder="Ціна (₴)" required>
+            </div>
+            
+            <div class="variant-row">
+                <input type="text" id="w2" placeholder="Вага (напр: 1 л)">
+                <input type="number" id="p2" placeholder="Ціна (₴)">
+            </div>
+            
+            <div class="variant-row">
+                <input type="text" id="w3" placeholder="Вага (напр: 3 л)">
+                <input type="number" id="p3" placeholder="Ціна (₴)">
+            </div>
+
+            <button type="submit" class="btn-submit" style="margin-top: 15px;">Зберегти та опублікувати</button>
+        </form>
+    </div>
+
+    <script type="module" src="admin.js"></script>
+</body>
+</html>
