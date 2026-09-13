@@ -217,3 +217,4 @@ function initModalEvents() {
         document.getElementById('hidden-total-price').value = `${total} ₴`;
     });
 }
+
