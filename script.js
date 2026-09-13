@@ -1,21 +1,18 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// Конфігурація Firebase проєкту
 const firebaseConfig = {
   apiKey: "AIzaSyA_FGyYTaIMDQlogkjgHdeahoMHMp9w2Q",
   authDomain: "pure-honey-33616.firebaseapp.com",
   projectId: "pure-honey-33616",
   storageBucket: "pure-honey-33616.firebasestorage.app",
   messagingSenderId: "275030343750",
-  appId: "1:275030343750:web:1403062f029c256400a047",
-  measurementId: "G-5M0C56RK74"
+  appId: "1:275030343750:web:1403062f029c256400a047"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Зберігання товарів у кошику
 let cart = [];
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -24,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initModalEvents();
 });
 
-// Завантаження товарів із Firebase та їх рендер
+// 1. Завантаження товарів із Firebase
 async function loadProductsFromFirebase() {
     const productsContainer = document.getElementById('products-grid');
     if (!productsContainer) return;
@@ -50,8 +47,10 @@ async function loadProductsFromFirebase() {
     }
 }
 
-// Генерація HTML-картки товару
+// 2. Рендер картки товару
 function renderProductCard(product, container) {
+    if (!product.variants || product.variants.length === 0) return;
+
     const weightButtonsHtml = product.variants.map((v, index) => `
         <button class="weight-btn ${index === 0 ? 'active' : ''}" 
                 data-weight="${v.weight}" 
@@ -87,7 +86,7 @@ function renderProductCard(product, container) {
     container.insertAdjacentHTML('beforeend', cardHtml);
 }
 
-// 1. ЛОГІКА КАРТОК ТОВАРУ (Вибір ваги та зміна ціни)
+// 3. Логіка перемикання ваги та ціни
 function initProductCards() {
     const cards = document.querySelectorAll('.product-card');
     
@@ -121,20 +120,14 @@ function initProductCards() {
     });
 }
 
-// 2. ФУНКЦІЇ РОБОТИ З КОШИКОМ
+// 4. Робота з кошиком
 function addToCart(id, name, weight, price) {
     const existingItem = cart.find(item => item.id === id && item.weight === weight);
     
     if (existingItem) {
         existingItem.quantity += 1;
     } else {
-        cart.push({
-            id: id,
-            name: name,
-            weight: weight,
-            price: price,
-            quantity: 1
-        });
+        cart.push({ id, name, weight, price, quantity: 1 });
     }
     
     updateCart();
@@ -181,7 +174,6 @@ function updateCart() {
     cartCountBadge.textContent = totalItems;
     cartTotalPriceElement.textContent = totalPrice;
 
-    // Делегування подій для кнопок у кошику
     cartItemsContainer.querySelectorAll('.qty-btn, .cart-item-remove').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const target = e.currentTarget;
@@ -197,9 +189,7 @@ function updateCart() {
 
 function changeQuantity(index, delta) {
     cart[index].quantity += delta;
-    if (cart[index].quantity <= 0) {
-        cart.splice(index, 1);
-    }
+    if (cart[index].quantity <= 0) cart.splice(index, 1);
     updateCart();
 }
 
@@ -228,7 +218,7 @@ function closeCartSidebar() {
     document.getElementById('cart-overlay').classList.remove('active');
 }
 
-// 3. ЛОГІКА МОДАЛЬНОГО ВІКНА ТА ВІДПРАВКИ ФОРМИ (Formspree)
+// 5. Відправка замовлення
 function initModalEvents() {
     const checkoutTrigger = document.getElementById('checkout-trigger');
     const modal = document.getElementById('checkout-modal');
@@ -259,16 +249,11 @@ function initModalEvents() {
         });
     }
 
-    closeModals.forEach(btn => {
-        btn.addEventListener('click', () => {
-            modal.classList.remove('active');
-        });
-    });
+    closeModals.forEach(btn => btn.addEventListener('click', () => modal.classList.remove('active')));
 
     if (orderForm) {
         orderForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            
             const submitBtn = document.getElementById('submit-order-btn');
             submitBtn.textContent = 'Надсилається...';
             submitBtn.disabled = true;
@@ -288,10 +273,10 @@ function initModalEvents() {
                     orderForm.reset();
                     modal.classList.remove('active');
                 } else {
-                    alert('Помилка при відправці. Будь ласка, зателефонуйте нам.');
+                    alert('Помилка при відправці.');
                 }
             })
-            .catch(() => alert('Помилка з\'єднання. Перевірте інтернет або зателефонуйте нам.'))
+            .catch(() => alert('Помилка з\'єднання.'))
             .finally(() => {
                 submitBtn.textContent = 'Підтвердити та надіслати';
                 submitBtn.disabled = false;
