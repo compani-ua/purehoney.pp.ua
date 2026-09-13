@@ -3,117 +3,156 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Панель управління — Pure Honey</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Панель адміністратора — Pure Honey</title>
     <style>
-        .admin-container {
-            max-width: 600px;
-            margin: 40px auto;
-            padding: 20px;
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        .form-group input, .form-group textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            box-sizing: border-box;
-        }
-        .variant-row {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-        .variant-row input {
-            flex: 1;
-        }
-        .btn-submit {
-            background: #ffb703;
-            color: #1e1e24;
-            border: none;
-            padding: 12px 20px;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-            width: 100%;
-        }
-        .btn-submit:hover {
-            background: #fb8500;
-        }
+        body { font-family: system-ui, -apple-system, sans-serif; background: #f4f4f9; padding: 20px; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1, h2 { text-align: center; color: #d97706; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: 600; }
+        input, textarea, button { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+        button { background: #d97706; color: #fff; font-weight: bold; border: none; cursor: pointer; margin-top: 10px; }
+        button:hover { background: #b45309; }
+        .hidden { display: none; }
+        .variant-row { display: flex; gap: 10px; margin-bottom: 10px; }
+        .variant-row input { flex: 1; }
     </style>
 </head>
 <body>
 
-    <!-- Блок входу -->
-    <div id="login-block" class="admin-container">
-        <h2>Вхід в адмін-панель</h2>
+<div class="container">
+    <!-- Форма входу -->
+    <div id="login-section">
+        <h1>Вхід в адмінку</h1>
         <form id="login-form">
             <div class="form-group">
                 <label>Email адміна:</label>
-                <input type="email" id="login-email" required>
+                <input type="email" id="login-email" required placeholder="admin@example.com">
             </div>
             <div class="form-group">
                 <label>Пароль:</label>
-                <input type="password" id="login-password" required>
+                <input type="password" id="login-password" required placeholder="******">
             </div>
-            <button type="submit" class="btn-submit">Увійти</button>
+            <button type="submit">Увійти</button>
         </form>
     </div>
 
-    <!-- Панель додавання товару (прихована до авторизації) -->
-    <div id="admin-panel" class="admin-container" style="display: none;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h2>Додати новий мед</h2>
-            <button id="logout-btn" style="background: #e74c3c; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">Вийти</button>
-        </div>
-
+    <!-- Панель додавання товарів -->
+    <div id="admin-panel" class="hidden">
+        <h2>Додати новий мед</h2>
         <form id="add-product-form">
             <div class="form-group">
-                <label>Назва товару (наприклад: Мед Липовий):</label>
-                <input type="text" id="prod-name" required>
+                <label>Назва товару:</label>
+                <input type="text" id="prod-name" placeholder="наприклад, Мед Липовий" required>
             </div>
-            
             <div class="form-group">
-                <label>Опис товару:</label>
-                <textarea id="prod-desc" rows="3" placeholder="Свіжий ароматний мед..."></textarea>
+                <label>Опис:</label>
+                <textarea id="prod-desc" rows="3" placeholder="Короткий опис меду..."></textarea>
             </div>
-
             <div class="form-group">
-                <label>Посилання на картинку (URL):</label>
-                <input type="url" id="prod-image" placeholder="https://..." required>
+                <label>Посилання на фото (URL):</label>
+                <input type="url" id="prod-img" placeholder="https://..." required>
             </div>
-
-            <h3>Варіанти фасовки та ціни:</h3>
-            
-            <div class="variant-row">
-                <input type="text" id="w1" placeholder="Вага (напр: 0.5 л)" required>
-                <input type="number" id="p1" placeholder="Ціна (₴)" required>
+            <div class="form-group">
+                <label>Варіанти фасовки та ціни:</label>
+                <div class="variant-row">
+                    <input type="text" placeholder="Об'єм (напр. 0.5 л)" class="var-weight" required>
+                    <input type="number" placeholder="Ціна (грн)" class="var-price" required>
+                </div>
+                <div class="variant-row">
+                    <input type="text" placeholder="Об'єм (напр. 1 л)" class="var-weight">
+                    <input type="number" placeholder="Ціна (грн)" class="var-price">
+                </div>
             </div>
-            
-            <div class="variant-row">
-                <input type="text" id="w2" placeholder="Вага (напр: 1 л)">
-                <input type="number" id="p2" placeholder="Ціна (₴)">
-            </div>
-            
-            <div class="variant-row">
-                <input type="text" id="w3" placeholder="Вага (напр: 3 л)">
-                <input type="number" id="p3" placeholder="Ціна (₴)">
-            </div>
-
-            <button type="submit" class="btn-submit" style="margin-top: 15px;">Зберегти та опублікувати</button>
+            <button type="submit" id="save-btn">Зберегти та опублікувати</button>
+            <button type="button" id="logout-btn" style="background:#6b7280;">Вийти</button>
         </form>
     </div>
+</div>
 
-    <script type="module" src="admin.js"></script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyA_FGyYTaIMDQlogkjgHdeahoMHMp9w2Q",
+    authDomain: "pure-honey-33616.firebaseapp.com",
+    projectId: "pure-honey-33616",
+    storageBucket: "pure-honey-33616.firebasestorage.app",
+    messagingSenderId: "275030343750",
+    appId: "1:275030343750:web:1403062f029c256400a047"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  const loginSection = document.getElementById('login-section');
+  const adminPanel = document.getElementById('admin-panel');
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      loginSection.classList.add('hidden');
+      adminPanel.classList.remove('hidden');
+    } else {
+      loginSection.classList.remove('hidden');
+      adminPanel.classList.add('hidden');
+    }
+  });
+
+  document.getElementById('login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      alert('Успішний вхід!');
+    } catch (error) {
+      alert('Помилка входу: ' + error.message);
+    }
+  });
+
+  document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
+
+  document.getElementById('add-product-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const saveBtn = document.getElementById('save-btn');
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Збереження...';
+
+    const name = document.getElementById('prod-name').value;
+    const description = document.getElementById('prod-desc').value;
+    const imageUrl = document.getElementById('prod-img').value;
+
+    const weights = document.querySelectorAll('.var-weight');
+    const prices = document.querySelectorAll('.var-price');
+    const variants = [];
+
+    weights.forEach((w, i) => {
+      if (w.value && prices[i].value) {
+        variants.push({ weight: w.value, price: Number(prices[i].value) });
+      }
+    });
+
+    try {
+      await addDoc(collection(db, "products"), {
+        name,
+        description,
+        imageUrl,
+        variants,
+        createdAt: new Date()
+      });
+      alert('Товар успішно додано!');
+      document.getElementById('add-product-form').reset();
+    } catch (err) {
+      alert('Помилка збереження: ' + err.message);
+    } finally {
+      saveBtn.disabled = false;
+      saveBtn.textContent = 'Зберегти та опублікувати';
+    }
+  });
+</script>
 </body>
 </html>
