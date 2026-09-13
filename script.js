@@ -1,11 +1,91 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+// Конфігурація Firebase проєкту
+const firebaseConfig = {
+  apiKey: "AIzaSyA_FGyYTaIMDQlogkjgHdeahoMHMp9w2Q",
+  authDomain: "pure-honey-33616.firebaseapp.com",
+  projectId: "pure-honey-33616",
+  storageBucket: "pure-honey-33616.firebasestorage.app",
+  messagingSenderId: "275030343750",
+  appId: "1:275030343750:web:1403062f029c256400a047",
+  measurementId: "G-5M0C56RK74"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 // Зберігання товарів у кошику
 let cart = [];
 
 document.addEventListener('DOMContentLoaded', () => {
-    initProductCards();
+    loadProductsFromFirebase();
     initCartEvents();
     initModalEvents();
 });
+
+// Завантаження товарів із Firebase та їх рендер
+async function loadProductsFromFirebase() {
+    const productsContainer = document.getElementById('products-grid');
+    if (!productsContainer) return;
+
+    try {
+        const querySnapshot = await getDocs(collection(db, "products"));
+        productsContainer.innerHTML = '';
+
+        if (querySnapshot.empty) {
+            productsContainer.innerHTML = '<p class="section-desc">Товарів поки немає в наявності.</p>';
+            return;
+        }
+
+        querySnapshot.forEach((doc) => {
+            const product = doc.data();
+            product.id = doc.id;
+            renderProductCard(product, productsContainer);
+        });
+
+        initProductCards();
+    } catch (error) {
+        console.error("Помилка завантаження товарів:", error);
+    }
+}
+
+// Генерація HTML-картки товару
+function renderProductCard(product, container) {
+    const weightButtonsHtml = product.variants.map((v, index) => `
+        <button class="weight-btn ${index === 0 ? 'active' : ''}" 
+                data-weight="${v.weight}" 
+                data-price="${v.price}">
+            ${v.weight}
+        </button>
+    `).join('');
+
+    const firstVariant = product.variants[0];
+
+    const cardHtml = `
+        <div class="product-card" data-product-id="${product.id}" data-product-name="${product.name}">
+            <div class="product-image">
+                <img src="${product.imageUrl}" alt="${product.name}">
+            </div>
+            <h3>${product.name}</h3>
+            <p class="product-meta">${product.description || 'Натуральний якісний мед'}</p>
+            <div class="product-middle">
+                <div class="product-middle-left">
+                    <span class="current-weight-label">Ціна за ${firstVariant.weight}</span>
+                    <div class="weight-buttons">${weightButtonsHtml}</div>
+                </div>
+                <div class="product-price">
+                    <span class="price-value">${firstVariant.price}</span> ₴
+                </div>
+            </div>
+            <div class="card-actions">
+                <button class="btn-cart add-to-cart-btn">У кошик</button>
+            </div>
+        </div>
+    `;
+
+    container.insertAdjacentHTML('beforeend', cardHtml);
+}
 
 // 1. ЛОГІКА КАРТОК ТОВАРУ (Вибір ваги та зміна ціни)
 function initProductCards() {
@@ -19,12 +99,9 @@ function initProductCards() {
         
         weightButtons.forEach(btn => {
             btn.addEventListener('click', () => {
-                // Знімаємо активний клас у всіх кнопок цієї картки
                 weightButtons.forEach(b => b.classList.remove('active'));
-                // Додаємо активний клас поточній кнопці
                 btn.classList.add('active');
                 
-                // Оновлюємо ціну на картці
                 const price = btn.getAttribute('data-price');
                 const weight = btn.getAttribute('data-weight');
                 priceValue.textContent = price;
@@ -32,7 +109,6 @@ function initProductCards() {
             });
         });
 
-        // Додавання у кошик при кліку
         addToCartBtn.addEventListener('click', () => {
             const productId = card.getAttribute('data-product-id');
             const productName = card.getAttribute('data-product-name');
@@ -47,7 +123,6 @@ function initProductCards() {
 
 // 2. ФУНКЦІЇ РОБОТИ З КОШИКОМ
 function addToCart(id, name, weight, price) {
-    // Шукаємо, чи є вже такий мед з ТАКОЮ Ж вагою у кошику
     const existingItem = cart.find(item => item.id === id && item.weight === weight);
     
     if (existingItem) {
@@ -93,10 +168,10 @@ function updateCart() {
                     <p>${item.weight} — ${item.price} ₴ / шт.</p>
                 </div>
                 <div class="cart-item-qty">
-                    <button class="qty-btn" onclick="changeQuantity(${index}, -1)">-</button>
+                    <button class="qty-btn" data-action="decrease" data-index="${index}">-</button>
                     <span>${item.quantity}</span>
-                    <button class="qty-btn" onclick="changeQuantity(${index}, 1)">+</button>
-                    <button class="cart-item-remove" onclick="removeCartItem(${index})"><i class="fa-solid fa-trash"></i></button>
+                    <button class="qty-btn" data-action="increase" data-index="${index}">+</button>
+                    <button class="cart-item-remove" data-action="remove" data-index="${index}"><i class="fa-solid fa-trash"></i></button>
                 </div>
             </div>
         `;
@@ -105,6 +180,19 @@ function updateCart() {
     cartItemsContainer.innerHTML = html;
     cartCountBadge.textContent = totalItems;
     cartTotalPriceElement.textContent = totalPrice;
+
+    // Делегування подій для кнопок у кошику
+    cartItemsContainer.querySelectorAll('.qty-btn, .cart-item-remove').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const target = e.currentTarget;
+            const index = parseInt(target.getAttribute('data-index'));
+            const action = target.getAttribute('data-action');
+
+            if (action === 'increase') changeQuantity(index, 1);
+            if (action === 'decrease') changeQuantity(index, -1);
+            if (action === 'remove') removeCartItem(index);
+        });
+    });
 }
 
 function changeQuantity(index, delta) {
@@ -120,16 +208,14 @@ function removeCartItem(index) {
     updateCart();
 }
 
-// Події відкриття/закриття кошика
 function initCartEvents() {
     const trigger = document.getElementById('cart-trigger');
-    const sidebar = document.getElementById('cart-sidebar');
     const closeBtn = document.getElementById('close-cart');
     const overlay = document.getElementById('cart-overlay');
     
-    trigger.addEventListener('click', openCartSidebar);
-    closeBtn.addEventListener('click', closeCartSidebar);
-    overlay.addEventListener('click', closeCartSidebar);
+    if (trigger) trigger.addEventListener('click', openCartSidebar);
+    if (closeBtn) closeBtn.addEventListener('click', closeCartSidebar);
+    if (overlay) overlay.addEventListener('click', closeCartSidebar);
 }
 
 function openCartSidebar() {
@@ -142,83 +228,74 @@ function closeCartSidebar() {
     document.getElementById('cart-overlay').classList.remove('active');
 }
 
-// 3. ЛОГІКА МОДАЛЬНОГО ВІКНА ТА ВІДПРАВКИ ФОРМИ
+// 3. ЛОГІКА МОДАЛЬНОГО ВІКНА ТА ВІДПРАВКИ ФОРМИ (Formspree)
 function initModalEvents() {
     const checkoutTrigger = document.getElementById('checkout-trigger');
     const modal = document.getElementById('checkout-modal');
     const closeModals = document.querySelectorAll('#close-modal');
     const orderForm = document.getElementById('order-form');
 
-    // Клік на "Оформити замовлення" в кошику
-    checkoutTrigger.addEventListener('click', () => {
-        if (cart.length === 0) {
-            alert('Ваш кошик порожній! Додайте мед для замовлення.');
-            return;
-        }
-        
-        // Готуємо текстовий звіт про товари для надсилання в імейлі
-        let cartSummaryText = '';
-        let totalPrice = 0;
-        
-        cart.forEach(item => {
-            const itemSum = item.price * item.quantity;
-            totalPrice += itemSum;
-            cartSummaryText += `• ${item.name} (${item.weight}) x ${item.quantity} шт. = ${itemSum} ₴\n`;
+    if (checkoutTrigger) {
+        checkoutTrigger.addEventListener('click', () => {
+            if (cart.length === 0) {
+                alert('Ваш кошик порожній! Додайте мед для замовлення.');
+                return;
+            }
+            
+            let cartSummaryText = '';
+            let totalPrice = 0;
+            
+            cart.forEach(item => {
+                const itemSum = item.price * item.quantity;
+                totalPrice += itemSum;
+                cartSummaryText += `• ${item.name} (${item.weight}) x ${item.quantity} шт. = ${itemSum} ₴\n`;
+            });
+            
+            document.getElementById('hidden-cart-data').value = cartSummaryText;
+            document.getElementById('hidden-total-price').value = `${totalPrice} ₴`;
+            
+            closeCartSidebar();
+            modal.classList.add('active');
         });
-        
-        // Записуємо дані у приховані поля форми
-        document.getElementById('hidden-cart-data').value = cartSummaryText;
-        document.getElementById('hidden-total-price').value = `${totalPrice} ₴`;
-        
-        // Закриваємо кошик і відкриваємо фінальне вікно форми
-        closeCartSidebar();
-        modal.classList.add('active');
-    });
+    }
 
-    // Закриття модального вікна
     closeModals.forEach(btn => {
         btn.addEventListener('click', () => {
             modal.classList.remove('active');
         });
     });
 
-    // Обробка відправки форми на пошту
-    orderForm.addEventListener('submit', function(e) {
-        e.preventDefault(); // Зупиняємо стандартне перезавантаження
-        
-        const submitBtn = document.getElementById('submit-order-btn');
-        submitBtn.textContent = 'Надсилається...';
-        submitBtn.disabled = true;
+    if (orderForm) {
+        orderForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submit-order-btn');
+            submitBtn.textContent = 'Надсилається...';
+            submitBtn.disabled = true;
 
-        // Збираємо дані форми
-        const formData = new FormData(orderForm);
+            const formData = new FormData(orderForm);
 
-        // Відправляємо дані на безкоштовний шлюз Formspree
-        fetch(orderForm.action, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'Accept': 'application/json'
-            }
-        })
-        .then(response => {
-            if (response.ok) {
-                alert('Дякуємо! Ваше замовлення успішно надіслано. Ми зв\'яжемося з вами найближчим часом!');
-                // Очищаємо кошик та закриваємо вікно
-                cart = [];
-                updateCart();
-                orderForm.reset();
-                modal.classList.remove('active');
-            } else {
-                alert('Ой! Сталася помилка при відправці. Будь ласка, зателефонуйте нам прямо зараз.');
-            }
-        })
-        .catch(error => {
-            alert('Помилка з\'єднання. Перевірте інтернет або зателефонуйте нам.');
-        })
-        .finally(() => {
-            submitBtn.textContent = 'Підтвердити та надіслати';
-            submitBtn.disabled = false;
+            fetch(orderForm.action, {
+                method: 'POST',
+                body: formData,
+                headers: { 'Accept': 'application/json' }
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Дякуємо! Ваше замовлення успішно надіслано.');
+                    cart = [];
+                    updateCart();
+                    orderForm.reset();
+                    modal.classList.remove('active');
+                } else {
+                    alert('Помилка при відправці. Будь ласка, зателефонуйте нам.');
+                }
+            })
+            .catch(() => alert('Помилка з\'єднання. Перевірте інтернет або зателефонуйте нам.'))
+            .finally(() => {
+                submitBtn.textContent = 'Підтвердити та надіслати';
+                submitBtn.disabled = false;
+            });
         });
-    });
+    }
 }
