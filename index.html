@@ -16,7 +16,6 @@
                 <a href="#home">Головна</a>
                 <a href="#products">Продукти</a>
                 <a href="#about">Про нас</a>
-                <a href="#contacts">Контакти</a>
             </nav>
             <div class="header-right">
                 <div class="cart-icon-wrapper" id="cart-trigger">
@@ -30,43 +29,19 @@
     <section id="home" class="hero">
         <div class="hero-overlay"></div>
         <div class="container hero-content">
-            <h1>Чистий натуральний мед прямо з української пасіки у Могилеві-Подільському</h1>
-            <p>100% натуральний мед без домішок та розбавлень.</p>
+            <h1>Чистий натуральний мед з пасіки</h1>
+            <p>100% натуральний продукт без домішок.</p>
             <a href="#products" class="btn-primary">Замовити</a>
         </div>
     </section>
 
-    <!-- КАТАЛОГ ТОВАРІВ (Firebase) -->
     <section id="products" class="products-section">
         <div class="container">
             <h2 class="section-title">Наш мед</h2>
-            <p class="section-desc">Оберіть зручний об'єм та замовляйте прямо зараз</p>
-            
-            <div id="products-grid" class="products-grid">
-                <!-- Товари завантажуються сюди через script.js -->
-            </div>
+            <div id="products-grid" class="products-grid"></div>
         </div>
     </section>
 
-    <section id="about" class="about-section">
-        <div class="container about-grid">
-            <div class="about-content">
-                <h2>Про PureHoney</h2>
-                <p>Ми — сімейна пасіка з Могилева-Подільського. Наш мед виготовляється в екологічно чистій місцевості.</p>
-            </div>
-        </div>
-    </section>
-
-    <footer class="footer">
-        <div class="container footer-grid">
-            <div>
-                <h3>PureHoney</h3>
-                <p>100% натуральний та екологічний мед.</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- КОШИК -->
     <div class="cart-overlay" id="cart-overlay"></div>
     <div class="cart-sidebar" id="cart-sidebar">
         <div class="cart-header">
@@ -85,7 +60,6 @@
         </div>
     </div>
 
-    <!-- МОДАЛЬНЕ ВІКНО -->
     <div class="modal-overlay" id="checkout-modal">
         <div class="modal-content">
             <button class="close-modal" id="close-modal">&times;</button>
@@ -103,7 +77,7 @@
                 </div>
                 <div class="form-group">
                     <label>Доставка:</label>
-                    <input type="text" name="address" required placeholder="Місто / Відділення НП">
+                    <input type="text" name="address" required placeholder="Місто / № НП">
                 </div>
                 <button type="submit" class="btn-submit" id="submit-order-btn">Підтвердити</button>
             </form>
