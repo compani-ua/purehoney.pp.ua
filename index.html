@@ -29,11 +29,11 @@
     </header>
 
     <!-- ГОЛОВНИЙ БАНЕР -->
-    <section id="home" class="hero">
+    <section id="home" class="hero" style="background-image: url('img/hero-bg.jpg');">
         <div class="hero-overlay"></div>
         <div class="container hero-content">
             <h1>Чистий натуральний мед прямо з української пасіки у Могилеві-Подільському</h1>
-            <p>100% натуральний мед без домішок та розбавлень. Збираємо з любов'ю та розвозимо по Могилеву-Подільському та всій Україні.</p>
+            <p>100% натуральний, нерозбавлений мед з власної пасіки — з любов'ю розвозимо по Могилеву-Подільському та всій Україні.</p>
             <div class="hero-buttons">
                 <a href="#products" class="btn-primary">Купити мед</a>
                 <a href="#products" class="btn-secondary">Продукція</a>
@@ -46,7 +46,7 @@
         <div class="container features-grid">
             <div class="feature-card">
                 <i class="fa-solid fa-leaf"></i>
-                <h3>100% Натуральний</h3>
+                <h3>100% натуральний</h3>
             </div>
             <div class="feature-card">
                 <i class="fa-solid fa-ban"></i>
@@ -67,7 +67,7 @@
     <section id="about" class="about-section">
         <div class="container about-grid">
             <div class="about-image">
-                <img src="https://images.unsplash.com/photo-1587049352847-4a222e784d38?auto=format&fit=crop&q=80&w=800" alt="Мед та пасіка">
+                <img src="img/about.jpg" alt="Про PureHoney">
                 <div class="badge-experience">
                     <span class="num">15+</span>
                     <span class="text">років досвіду</span>
@@ -92,7 +92,7 @@
         <div class="container">
             <span class="sub-title">КАТАЛОГ</span>
             <h2 class="section-title">Наш мед</h2>
-            <p class="section-desc">Оберіть зручний об'єм та замовляйте прямо зараз</p>
+            <p class="section-desc">Оберіть зручний об'єм та замовляйте прямо зараз — від 250g до 3 л</p>
             
             <div id="products-grid" class="products-grid">
                 <!-- Товари з Firebase з'являться тут -->
@@ -139,15 +139,16 @@
         </div>
     </section>
 
-    <!-- НАША ПРИРОДА -->
+    <!-- НАША ПРИРОДА (ГАЛЕРЕЯ) -->
     <section class="gallery-section">
         <div class="container">
             <span class="sub-title">ГАЛЕРЕЯ</span>
             <h2 class="section-title">Наша природа</h2>
             <div class="gallery-grid">
-                <img src="https://images.unsplash.com/photo-1473081556163-2a17de81fc97?auto=format&fit=crop&q=80&w=400" alt="Галерея 1">
-                <img src="https://images.unsplash.com/photo-1587049352847-4a222e784d38?auto=format&fit=crop&q=80&w=400" alt="Галерея 2">
-                <img src="https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?auto=format&fit=crop&q=80&w=400" alt="Галерея 3">
+                <img src="img/gallery-1.jpg" alt="Галерея 1">
+                <img src="img/gallery-2.jpg" alt="Галерея 2">
+                <img src="img/gallery-3.jpg" alt="Галерея 3">
+                <img src="img/gallery-4.jpg" alt="Галерея 4">
             </div>
         </div>
     </section>
@@ -199,7 +200,7 @@
             <button class="close-cart" id="close-cart">&times;</button>
         </div>
         <div class="cart-body" id="cart-items">
-            <p class="empty-message">Кошик поки що порожній</p>
+            <p class="empty-message">Кошик порожній</p>
         </div>
         <div class="cart-footer">
             <div class="cart-total">
@@ -220,17 +221,17 @@
                 <input type="hidden" name="total_price" id="hidden-total-price">
                 <div class="form-group">
                     <label>Ваше ім'я:</label>
-                    <input type="text" name="name" required placeholder="Іван Іванов">
+                    <input type="text" name="name" required placeholder="Ім'я">
                 </div>
                 <div class="form-group">
                     <label>Телефон:</label>
-                    <input type="tel" name="phone" required placeholder="+38 (097) 000-00-00">
+                    <input type="tel" name="phone" required placeholder="+380...">
                 </div>
                 <div class="form-group">
-                    <label>Місто та № відділення Нової Пошти / Самовивіз:</label>
-                    <input type="text" name="address" required placeholder="м. Могилів-Подільський, №1">
+                    <label>Доставка:</label>
+                    <input type="text" name="address" required placeholder="Місто / № НП">
                 </div>
-                <button type="submit" class="btn-submit" id="submit-order-btn">Підтвердити та надіслати</button>
+                <button type="submit" class="btn-submit" id="submit-order-btn">Підтвердити</button>
             </form>
         </div>
     </div>
